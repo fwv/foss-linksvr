@@ -1,0 +1,7 @@
+FROM alpine
+
+COPY bin/zonesvr /app/
+
+WORKDIR /app
+
+ENTRYPOINT ["./main"]

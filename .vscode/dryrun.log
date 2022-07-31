@@ -1,5 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/fwv/code/foss-linksvr'
-go build -o bin/linksvr/linksvr cmd/main.go
-make: Leaving directory '/home/fwv/code/foss-linksvr'
- 

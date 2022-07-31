@@ -8,6 +8,12 @@ func Info(msg string, fields ...zap.Field) {
 	logger.Info(msg, fields...)
 }
 
+func Debug(msg string, fields ...zap.Field) {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+	logger.Debug(msg, fields...)
+}
+
 func Error(msg string, fields ...zap.Field) {
 	logger, _ := zap.NewDevelopment()
 	defer logger.Sync()

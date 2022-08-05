@@ -3,17 +3,15 @@ package ssclient
 import (
 	"context"
 	"errors"
-	"flag"
 	"io"
+	"linksvr/internal/pkg/config"
 	"linksvr/pkg/zlog"
 
 	"github.com/foss/osdsvr/pkg/proto/osdpb"
 	"go.uber.org/zap"
 )
 
-var (
-	uploadChunkSize = flag.Int("uploadChunkSize", 1024*64, "upload chunk size")
-)
+var ()
 
 type OsdSerivce struct {
 	osdClient osdpb.OsdServiceClient
@@ -25,7 +23,7 @@ func NewOsdService(osdClient osdpb.OsdServiceClient) *OsdSerivce {
 	}
 }
 
-func (s *OsdSerivce) UploadFileFromStream(ctx context.Context, src io.Reader, objectName string) error {
+func (s *OsdSerivce) UploadFileFromStream(ctx context.Context, src io.Reader, objectName string, bucketID string) error {
 	if s.osdClient == nil {
 		return errors.New("osd client is nil")
 	}
@@ -33,15 +31,20 @@ func (s *OsdSerivce) UploadFileFromStream(ctx context.Context, src io.Reader, ob
 	if err != nil {
 		return err
 	}
+	// send metadata
+	stream.Send(&osdpb.FileUploadRequest{
+		MetaData: &osdpb.MetaData{
+			Name:     objectName,
+			BucketId: bucketID,
+		},
+	})
 	totalSize := 0
-	chunk := make([]byte, *uploadChunkSize)
+	chunk := make([]byte, *config.UPLOAD_CHUNK_SIZE)
 	for {
 		n, err := src.Read(chunk)
-		zlog.Debug("read chunk data from http request body", zap.Int("read size", n))
+		// zlog.Debug("read chunk data from http request body", zap.Int("read size", n))
+		// send trunk data
 		stream.Send(&osdpb.FileUploadRequest{
-			MetaData: &osdpb.MetaData{
-				Name: objectName,
-			},
 			Chunk: chunk[:n],
 		})
 		if err != nil {
@@ -61,15 +64,15 @@ func (s *OsdSerivce) UploadFileFromStream(ctx context.Context, src io.Reader, ob
 	return nil
 }
 
-func (s *OsdSerivce) DownloadFileFromStream(ctx context.Context, dst io.Writer, objectName string) error {
+func (s *OsdSerivce) DownloadFileFromStream(ctx context.Context, dst io.Writer, objectName string, bucketID string, version int64) error {
 	if s.osdClient == nil {
 		return errors.New("osd client is nil")
 	}
 	stream, err := s.osdClient.DownloadFile(ctx, &osdpb.FileDownloadRequest{
 		MetaData: &osdpb.MetaData{
-			Name:       objectName,
-			UploadTime: 0,
-			Size:       0,
+			Name:     objectName,
+			BucketId: bucketID,
+			Version:  version,
 		},
 	})
 	if err != nil {
@@ -102,9 +105,9 @@ func (s *OsdSerivce) UploadFile(ctx context.Context, data []byte) error {
 		return err
 	}
 
-	for i := 0; i < maxLen; i += *uploadChunkSize {
+	for i := 0; i < maxLen; i += *config.UPLOAD_CHUNK_SIZE {
 		head := i
-		tail := i + *uploadChunkSize
+		tail := i + *config.UPLOAD_CHUNK_SIZE
 		if tail > maxLen {
 			tail = maxLen
 		}
@@ -118,19 +121,5 @@ func (s *OsdSerivce) UploadFile(ctx context.Context, data []byte) error {
 		return err
 	}
 	zlog.Info("upload completed", zap.Any("reslut code", rsp.ResultCode))
-	return nil
-}
-
-func (s *OsdSerivce) SayHello(ctx context.Context, message string) error {
-	if s.osdClient == nil {
-		return errors.New("osd service is empty")
-	}
-	rsp, err := s.osdClient.SayHello(ctx, &osdpb.HelloRequest{
-		Name: message,
-	})
-	if err != nil {
-		return err
-	}
-	zlog.Info("server reply", zap.String("message", rsp.Message))
 	return nil
 }

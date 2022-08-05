@@ -22,10 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LinkServiceClient interface {
-	// Sends a greeting
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
-	// 文件上传
-	UploadFile(ctx context.Context, opts ...grpc.CallOption) (LinkService_UploadFileClient, error)
+	RegisterOSD(ctx context.Context, in *RegisterOSDRequest, opts ...grpc.CallOption) (*RegisterOSDReply, error)
 }
 
 type linkServiceClient struct {
@@ -36,57 +33,20 @@ func NewLinkServiceClient(cc grpc.ClientConnInterface) LinkServiceClient {
 	return &linkServiceClient{cc}
 }
 
-func (c *linkServiceClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/linkpb.LinkService/SayHello", in, out, opts...)
+func (c *linkServiceClient) RegisterOSD(ctx context.Context, in *RegisterOSDRequest, opts ...grpc.CallOption) (*RegisterOSDReply, error) {
+	out := new(RegisterOSDReply)
+	err := c.cc.Invoke(ctx, "/linkpb.LinkService/RegisterOSD", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *linkServiceClient) UploadFile(ctx context.Context, opts ...grpc.CallOption) (LinkService_UploadFileClient, error) {
-	stream, err := c.cc.NewStream(ctx, &LinkService_ServiceDesc.Streams[0], "/linkpb.LinkService/UploadFile", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &linkServiceUploadFileClient{stream}
-	return x, nil
-}
-
-type LinkService_UploadFileClient interface {
-	Send(*FileUploadRequest) error
-	CloseAndRecv() (*FileUploadResponse, error)
-	grpc.ClientStream
-}
-
-type linkServiceUploadFileClient struct {
-	grpc.ClientStream
-}
-
-func (x *linkServiceUploadFileClient) Send(m *FileUploadRequest) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *linkServiceUploadFileClient) CloseAndRecv() (*FileUploadResponse, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	m := new(FileUploadResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 // LinkServiceServer is the server API for LinkService service.
 // All implementations must embed UnimplementedLinkServiceServer
 // for forward compatibility
 type LinkServiceServer interface {
-	// Sends a greeting
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
-	// 文件上传
-	UploadFile(LinkService_UploadFileServer) error
+	RegisterOSD(context.Context, *RegisterOSDRequest) (*RegisterOSDReply, error)
 	mustEmbedUnimplementedLinkServiceServer()
 }
 
@@ -94,11 +54,8 @@ type LinkServiceServer interface {
 type UnimplementedLinkServiceServer struct {
 }
 
-func (UnimplementedLinkServiceServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
-}
-func (UnimplementedLinkServiceServer) UploadFile(LinkService_UploadFileServer) error {
-	return status.Errorf(codes.Unimplemented, "method UploadFile not implemented")
+func (UnimplementedLinkServiceServer) RegisterOSD(context.Context, *RegisterOSDRequest) (*RegisterOSDReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterOSD not implemented")
 }
 func (UnimplementedLinkServiceServer) mustEmbedUnimplementedLinkServiceServer() {}
 
@@ -113,48 +70,22 @@ func RegisterLinkServiceServer(s grpc.ServiceRegistrar, srv LinkServiceServer) {
 	s.RegisterService(&LinkService_ServiceDesc, srv)
 }
 
-func _LinkService_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _LinkService_RegisterOSD_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterOSDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LinkServiceServer).SayHello(ctx, in)
+		return srv.(LinkServiceServer).RegisterOSD(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/linkpb.LinkService/SayHello",
+		FullMethod: "/linkpb.LinkService/RegisterOSD",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LinkServiceServer).SayHello(ctx, req.(*HelloRequest))
+		return srv.(LinkServiceServer).RegisterOSD(ctx, req.(*RegisterOSDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
-}
-
-func _LinkService_UploadFile_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(LinkServiceServer).UploadFile(&linkServiceUploadFileServer{stream})
-}
-
-type LinkService_UploadFileServer interface {
-	SendAndClose(*FileUploadResponse) error
-	Recv() (*FileUploadRequest, error)
-	grpc.ServerStream
-}
-
-type linkServiceUploadFileServer struct {
-	grpc.ServerStream
-}
-
-func (x *linkServiceUploadFileServer) SendAndClose(m *FileUploadResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *linkServiceUploadFileServer) Recv() (*FileUploadRequest, error) {
-	m := new(FileUploadRequest)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
 }
 
 // LinkService_ServiceDesc is the grpc.ServiceDesc for LinkService service.
@@ -165,16 +96,10 @@ var LinkService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LinkServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SayHello",
-			Handler:    _LinkService_SayHello_Handler,
+			MethodName: "RegisterOSD",
+			Handler:    _LinkService_RegisterOSD_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "UploadFile",
-			Handler:       _LinkService_UploadFile_Handler,
-			ClientStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "pkg/proto/linkpb/link_service.proto",
 }

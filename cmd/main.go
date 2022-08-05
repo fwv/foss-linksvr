@@ -2,35 +2,43 @@ package main
 
 import (
 	"flag"
+	"linksvr/internal/pkg/bucket"
+	"linksvr/internal/pkg/config"
 	"linksvr/internal/pkg/object"
+	"linksvr/internal/pkg/osd"
+	"linksvr/internal/pkg/server"
+	"linksvr/internal/pkg/version"
 	"linksvr/pkg/zlog"
 	"net/http"
 
 	"go.uber.org/zap"
 )
 
-var (
-	osdAddr      = flag.String("osdAddr", ":5000", "osd serivce address")
-	linkHttpAddr = flag.String("osdHttpAddr", ":4000", "linksvr http server address")
-)
-
 func main() {
 	flag.Parse()
-	// Set up a connection to the server.
-	// conn, err := grpc.Dial(*osdAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	// if err != nil {
-	// 	log.Fatalf("did not connect: %v", err)
-	// }
-	// defer conn.Close()
-	// c := osdpb.NewOsdServiceClient(conn)
-	// osdSvc := ssclient.NewOsdService(c)
-	// osdSvc.SayHello(context.Background(), "fengwei")
-
-	// // upload test
-	// content := "134568901234567890akjsdhfakjsdhflak;jsdf;alsdjf;alskdjf;laksdjf;alksdjf;alksdjf;alksdjfa;lksdjalskhfuioweyhfqiuwehfuihcvzhdxcvuilkawheuiolfhalskdjfhkwjleh1234567890"
-	// data := []byte(content)
-	// osdSvc.UploadFile(context.Background(), data)
+	done := make(chan bool)
+	// http server
 	http.HandleFunc("/object/", object.Handler)
-	zlog.Info("osd http server start to serving", zap.String("addr", *linkHttpAddr))
-	http.ListenAndServe(*linkHttpAddr, nil)
+	http.HandleFunc("/bucket/", bucket.Handler)
+	http.HandleFunc("/version/", version.Handler)
+	zlog.Info("linksvr http server start to serving", zap.String("addr", *config.LINK_HTTP_ADD))
+	go func() {
+		http.ListenAndServe(*config.LINK_HTTP_ADD, nil)
+	}()
+
+	// grpc server
+	linkServer := server.NewLinkServer(osd.Selector)
+	go func() {
+		if err := linkServer.Serve(); err != nil {
+			zlog.Error("linksvr grpc serve failed", zap.Error(err))
+			close(done)
+		}
+		zlog.Info("linksvr grpc server start to serving", zap.String("addr", *config.LINK_GRPC_ADDR))
+	}()
+
+	// waiting for osd service register
+	registerCh := make(chan bool)
+	osd.Selector.Init(registerCh)
+	<-registerCh
+	<-done
 }

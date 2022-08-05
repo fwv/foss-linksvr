@@ -20,17 +20,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// The request message containing the user's name.
-type HelloRequest struct {
+type RegisterOSDRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Addr  string `protobuf:"bytes,1,opt,name=addr,proto3" json:"addr,omitempty"`
+	OsdId int64  `protobuf:"varint,2,opt,name=osd_id,json=osdId,proto3" json:"osd_id,omitempty"`
 }
 
-func (x *HelloRequest) Reset() {
-	*x = HelloRequest{}
+func (x *RegisterOSDRequest) Reset() {
+	*x = RegisterOSDRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -38,13 +38,13 @@ func (x *HelloRequest) Reset() {
 	}
 }
 
-func (x *HelloRequest) String() string {
+func (x *RegisterOSDRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HelloRequest) ProtoMessage() {}
+func (*RegisterOSDRequest) ProtoMessage() {}
 
-func (x *HelloRequest) ProtoReflect() protoreflect.Message {
+func (x *RegisterOSDRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,29 +56,35 @@ func (x *HelloRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HelloRequest.ProtoReflect.Descriptor instead.
-func (*HelloRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterOSDRequest.ProtoReflect.Descriptor instead.
+func (*RegisterOSDRequest) Descriptor() ([]byte, []int) {
 	return file_pkg_proto_linkpb_link_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *HelloRequest) GetName() string {
+func (x *RegisterOSDRequest) GetAddr() string {
 	if x != nil {
-		return x.Name
+		return x.Addr
 	}
 	return ""
 }
 
-// The response message containing the greetings
-type HelloReply struct {
+func (x *RegisterOSDRequest) GetOsdId() int64 {
+	if x != nil {
+		return x.OsdId
+	}
+	return 0
+}
+
+type RegisterOSDReply struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Result string `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
 }
 
-func (x *HelloReply) Reset() {
-	*x = HelloReply{}
+func (x *RegisterOSDReply) Reset() {
+	*x = RegisterOSDReply{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,13 +92,13 @@ func (x *HelloReply) Reset() {
 	}
 }
 
-func (x *HelloReply) String() string {
+func (x *RegisterOSDReply) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HelloReply) ProtoMessage() {}
+func (*RegisterOSDReply) ProtoMessage() {}
 
-func (x *HelloReply) ProtoReflect() protoreflect.Message {
+func (x *RegisterOSDReply) ProtoReflect() protoreflect.Message {
 	mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -104,252 +110,14 @@ func (x *HelloReply) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HelloReply.ProtoReflect.Descriptor instead.
-func (*HelloReply) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterOSDReply.ProtoReflect.Descriptor instead.
+func (*RegisterOSDReply) Descriptor() ([]byte, []int) {
 	return file_pkg_proto_linkpb_link_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *HelloReply) GetMessage() string {
+func (x *RegisterOSDReply) GetResult() string {
 	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-// 文件元数据
-type MetaData struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Oid        int64  `protobuf:"varint,1,opt,name=oid,proto3" json:"oid,omitempty"`                                 // 对象id
-	Name       string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                // 文件名
-	UploadTime int64  `protobuf:"varint,3,opt,name=upload_time,json=uploadTime,proto3" json:"upload_time,omitempty"` // 文件上传时间
-	Size       int64  `protobuf:"varint,4,opt,name=size,proto3" json:"size,omitempty"`                               // 文件大小
-	Uid        int64  `protobuf:"varint,5,opt,name=uid,proto3" json:"uid,omitempty"`                                 // 所属用户id
-}
-
-func (x *MetaData) Reset() {
-	*x = MetaData{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *MetaData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MetaData) ProtoMessage() {}
-
-func (x *MetaData) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MetaData.ProtoReflect.Descriptor instead.
-func (*MetaData) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_linkpb_link_service_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *MetaData) GetOid() int64 {
-	if x != nil {
-		return x.Oid
-	}
-	return 0
-}
-
-func (x *MetaData) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *MetaData) GetUploadTime() int64 {
-	if x != nil {
-		return x.UploadTime
-	}
-	return 0
-}
-
-func (x *MetaData) GetSize() int64 {
-	if x != nil {
-		return x.Size
-	}
-	return 0
-}
-
-func (x *MetaData) GetUid() int64 {
-	if x != nil {
-		return x.Uid
-	}
-	return 0
-}
-
-// 文件
-type File struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	MetaData *MetaData `protobuf:"bytes,1,opt,name=meta_data,json=metaData,proto3" json:"meta_data,omitempty"` // 文件元数据
-	Content  []byte    `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`                   // 文件内容
-}
-
-func (x *File) Reset() {
-	*x = File{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *File) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*File) ProtoMessage() {}
-
-func (x *File) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use File.ProtoReflect.Descriptor instead.
-func (*File) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_linkpb_link_service_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *File) GetMetaData() *MetaData {
-	if x != nil {
-		return x.MetaData
-	}
-	return nil
-}
-
-func (x *File) GetContent() []byte {
-	if x != nil {
-		return x.Content
-	}
-	return nil
-}
-
-type FileUploadRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	File *File `protobuf:"bytes,1,opt,name=file,proto3" json:"file,omitempty"` // 文件数据
-}
-
-func (x *FileUploadRequest) Reset() {
-	*x = FileUploadRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FileUploadRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FileUploadRequest) ProtoMessage() {}
-
-func (x *FileUploadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FileUploadRequest.ProtoReflect.Descriptor instead.
-func (*FileUploadRequest) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_linkpb_link_service_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *FileUploadRequest) GetFile() *File {
-	if x != nil {
-		return x.File
-	}
-	return nil
-}
-
-type FileUploadResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ResultCode int64  `protobuf:"varint,1,opt,name=result_code,json=resultCode,proto3" json:"result_code,omitempty"` // 上传结果
-	Desc       string `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc,omitempty"`                                // 结果描述
-}
-
-func (x *FileUploadResponse) Reset() {
-	*x = FileUploadResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FileUploadResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FileUploadResponse) ProtoMessage() {}
-
-func (x *FileUploadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_linkpb_link_service_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FileUploadResponse.ProtoReflect.Descriptor instead.
-func (*FileUploadResponse) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_linkpb_link_service_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *FileUploadResponse) GetResultCode() int64 {
-	if x != nil {
-		return x.ResultCode
-	}
-	return 0
-}
-
-func (x *FileUploadResponse) GetDesc() string {
-	if x != nil {
-		return x.Desc
+		return x.Result
 	}
 	return ""
 }
@@ -359,44 +127,22 @@ var File_pkg_proto_linkpb_link_service_proto protoreflect.FileDescriptor
 var file_pkg_proto_linkpb_link_service_proto_rawDesc = []byte{
 	0x0a, 0x23, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6c, 0x69, 0x6e, 0x6b,
 	0x70, 0x62, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x22, 0x22, 0x0a,
-	0x0c, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x22, 0x26, 0x0a, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12,
-	0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x77, 0x0a, 0x08, 0x4d, 0x65, 0x74,
-	0x61, 0x44, 0x61, 0x74, 0x61, 0x12, 0x10, 0x0a, 0x03, 0x6f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x03, 0x52, 0x03, 0x6f, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x75,
-	0x70, 0x6c, 0x6f, 0x61, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x0a, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04,
-	0x73, 0x69, 0x7a, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65,
-	0x12, 0x10, 0x0a, 0x03, 0x75, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x75,
-	0x69, 0x64, 0x22, 0x4f, 0x0a, 0x04, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x2d, 0x0a, 0x09, 0x6d, 0x65,
-	0x74, 0x61, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e,
-	0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x44, 0x61, 0x74, 0x61, 0x52,
-	0x08, 0x6d, 0x65, 0x74, 0x61, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e,
-	0x74, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74,
-	0x65, 0x6e, 0x74, 0x22, 0x35, 0x0a, 0x11, 0x46, 0x69, 0x6c, 0x65, 0x55, 0x70, 0x6c, 0x6f, 0x61,
-	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x20, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x2e,
-	0x46, 0x69, 0x6c, 0x65, 0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x22, 0x49, 0x0a, 0x12, 0x46, 0x69,
-	0x6c, 0x65, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x1f, 0x0a, 0x0b, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x43, 0x6f, 0x64,
-	0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x65, 0x73, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x64, 0x65, 0x73, 0x63, 0x32, 0x8c, 0x01, 0x0a, 0x0b, 0x4c, 0x69, 0x6e, 0x6b, 0x53, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x36, 0x0a, 0x08, 0x53, 0x61, 0x79, 0x48, 0x65, 0x6c, 0x6c,
-	0x6f, 0x12, 0x14, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x2e, 0x48, 0x65, 0x6c, 0x6c, 0x6f,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62,
-	0x2e, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x45, 0x0a,
-	0x0a, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x19, 0x2e, 0x6c, 0x69,
-	0x6e, 0x6b, 0x70, 0x62, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x2e,
-	0x46, 0x69, 0x6c, 0x65, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x28, 0x01, 0x42, 0x1a, 0x5a, 0x18, 0x6c, 0x69, 0x6e, 0x6b, 0x73, 0x76, 0x72, 0x2f,
-	0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x22, 0x3f, 0x0a,
+	0x12, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x53, 0x44, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x64, 0x64, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x61, 0x64, 0x64, 0x72, 0x12, 0x15, 0x0a, 0x06, 0x6f, 0x73, 0x64, 0x5f, 0x69,
+	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6f, 0x73, 0x64, 0x49, 0x64, 0x22, 0x2a,
+	0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x53, 0x44, 0x52, 0x65, 0x70,
+	0x6c, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0x54, 0x0a, 0x0b, 0x4c, 0x69,
+	0x6e, 0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x45, 0x0a, 0x0b, 0x52, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x53, 0x44, 0x12, 0x1a, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x70,
+	0x62, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x53, 0x44, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x2e, 0x52, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x53, 0x44, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00,
+	0x42, 0x1a, 0x5a, 0x18, 0x6c, 0x69, 0x6e, 0x6b, 0x73, 0x76, 0x72, 0x2f, 0x70, 0x6b, 0x67, 0x2f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6c, 0x69, 0x6e, 0x6b, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -411,27 +157,19 @@ func file_pkg_proto_linkpb_link_service_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_linkpb_link_service_proto_rawDescData
 }
 
-var file_pkg_proto_linkpb_link_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_pkg_proto_linkpb_link_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_pkg_proto_linkpb_link_service_proto_goTypes = []interface{}{
-	(*HelloRequest)(nil),       // 0: linkpb.HelloRequest
-	(*HelloReply)(nil),         // 1: linkpb.HelloReply
-	(*MetaData)(nil),           // 2: linkpb.MetaData
-	(*File)(nil),               // 3: linkpb.File
-	(*FileUploadRequest)(nil),  // 4: linkpb.FileUploadRequest
-	(*FileUploadResponse)(nil), // 5: linkpb.FileUploadResponse
+	(*RegisterOSDRequest)(nil), // 0: linkpb.RegisterOSDRequest
+	(*RegisterOSDReply)(nil),   // 1: linkpb.RegisterOSDReply
 }
 var file_pkg_proto_linkpb_link_service_proto_depIdxs = []int32{
-	2, // 0: linkpb.File.meta_data:type_name -> linkpb.MetaData
-	3, // 1: linkpb.FileUploadRequest.file:type_name -> linkpb.File
-	0, // 2: linkpb.LinkService.SayHello:input_type -> linkpb.HelloRequest
-	4, // 3: linkpb.LinkService.UploadFile:input_type -> linkpb.FileUploadRequest
-	1, // 4: linkpb.LinkService.SayHello:output_type -> linkpb.HelloReply
-	5, // 5: linkpb.LinkService.UploadFile:output_type -> linkpb.FileUploadResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 0: linkpb.LinkService.RegisterOSD:input_type -> linkpb.RegisterOSDRequest
+	1, // 1: linkpb.LinkService.RegisterOSD:output_type -> linkpb.RegisterOSDReply
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_linkpb_link_service_proto_init() }
@@ -441,7 +179,7 @@ func file_pkg_proto_linkpb_link_service_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_pkg_proto_linkpb_link_service_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HelloRequest); i {
+			switch v := v.(*RegisterOSDRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -453,55 +191,7 @@ func file_pkg_proto_linkpb_link_service_proto_init() {
 			}
 		}
 		file_pkg_proto_linkpb_link_service_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HelloReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_pkg_proto_linkpb_link_service_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MetaData); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_pkg_proto_linkpb_link_service_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*File); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_pkg_proto_linkpb_link_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileUploadRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_pkg_proto_linkpb_link_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileUploadResponse); i {
+			switch v := v.(*RegisterOSDReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -519,7 +209,7 @@ func file_pkg_proto_linkpb_link_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_pkg_proto_linkpb_link_service_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
